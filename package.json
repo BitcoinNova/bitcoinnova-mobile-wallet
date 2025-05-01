@@ -75,6 +75,11 @@
   "jest": {
     "preset": "react-native"
   },
+  
+  "resolutions": {
+    "psl": "1.9.0"
+  }  
+  
   "react-native": {
     "zlib": "browserify-zlib",
     "console": "console-browserify",
