@@ -78,7 +78,7 @@
   
   "resolutions": {
     "psl": "1.9.0"
-  }  
+  },  
   
   "react-native": {
     "zlib": "browserify-zlib",
