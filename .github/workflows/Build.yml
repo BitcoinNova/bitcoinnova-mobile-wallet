@@ -1,0 +1,77 @@
+name: Build APP Android
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+
+  # Creating Android applications from Ubuntu 22.04
+  ubuntu_22_build:
+    name: Ubuntu 22.04
+    runs-on: ubuntu-22.04
+    env:
+      ANDROID_NDK_HOME: /home/runner/Android/Sdk/ndk/21.4.7075529
+      ANDROID_HOME: /home/runner/Android/Sdk
+      
+    steps:
+
+      # This action checks-out your repository.
+      - uses: actions/checkout@v4
+
+      # Install Node.JS 16
+      - name: Install Node.JS 14
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14
+          
+      # Install Java 11
+      - name: Install Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11.0.24+8'
+      
+      # Download Dependences Node.JS
+      - name: Download Dependences Node.JS
+        run: |
+          yarn add jetifier
+          yarn add querystring
+          yarn install
+          sed -i 's/md4/md5/g' node_modules/metro-cache/src/stableHash.js
+          cat node_modules/metro-cache/src/stableHash.js
+          yarn postinstall
+
+      # Download Command Line Tools SDK
+      - name: Download Command Line Tools SDK
+        run: |  
+          cd $HOME
+          wget https://dl.google.com/android/repository/commandlinetools-linux-6200805_latest.zip
+
+      # Create Directory and Decompress - Command Line Tools SDK
+      - name: Create Directory and Decompress - Command Line Tools SDK
+        run: |    
+          cd $HOME && mkdir -p Android/Sdk
+          unzip commandlinetools-linux-6200805_latest.zip -d $HOME/Android/Sdk
+          
+      # Setup Android SDK        
+      - name: Setup Android SDK
+        run: |
+            chmod 777 $HOME/Android/Sdk/tools/bin/*
+            /home/runner/Android/Sdk/tools/bin/sdkmanager --list --include_obsolete --sdk_root=$ANDROID_HOME
+            yes | /home/runner/Android/Sdk/tools/bin/sdkmanager "platform-tools" "cmdline-tools;latest" "ndk;21.4.7075529" "platforms;android-29" "build-tools;29.0.2" --sdk_root=$ANDROID_HOME --include_obsolete
+
+      # Building APK APP      
+      - name: Building APK APP
+        run: |
+           chmod 777 android/* && chmod 777 android/*/* && chmod 777 android/*/*/*
+           export NODE_OPTIONS=--openssl-legacy-provider && sudo yarn deploy-android --reset-cache
+
+      # Upload to GH Actions Artifacts
+      - name: Upload To GH Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: ./android/app/build/outputs/apk/release/ 
