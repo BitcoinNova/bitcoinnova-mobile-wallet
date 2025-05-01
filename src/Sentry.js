@@ -32,7 +32,7 @@ export function initSentry() {
     if (sentryIsEnabled) {
         /* CHANGE THIS IF YOU ARE FORKING! */
         Sentry.init({
-          dsn: 'https://aa090f90384b4c43bdbd5bd66c0408b2@o918382.ingest.sentry.io/5861501',
+          dsn: 'https://2e5e93080b8a6919260308a14d41a66e@o4509248099909632.ingest.de.sentry.io/4509248101220432',
         });
 
         Sentry.setRelease('org.bitcoinnova.mobileapp-' + Config.appVersion);
