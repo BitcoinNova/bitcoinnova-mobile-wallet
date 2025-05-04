@@ -241,7 +241,7 @@ async function createTables(DB) {
                 0,
                 'darkMode',
                 0,
-                1,
+                0,
                 'hardware-auth',
                 ?
             )`,
