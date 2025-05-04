@@ -83,6 +83,8 @@ const Config = new function() {
      */
     this.scanCoinbaseTransactions = false;
 
+    this.autoOptimize = false;
+
     /**
      * The minimum fee allowed for transactions, in ATOMIC units
      */
